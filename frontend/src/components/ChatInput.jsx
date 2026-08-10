@@ -3,7 +3,7 @@ import { Send, Mic, Square, Paperclip, Loader2, X, RefreshCw, Check, AlertCircle
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
-export default function ChatInput({ onSendText, onUploadFile, isProcessing, languageCode, setLanguageCode, fontStyle, theme }) {
+export default function ChatInput({ onSendText, onUploadFile, isProcessing, languageCode, setLanguageCode, theme }) {
   const [inputText, setInputText] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   
@@ -32,15 +32,14 @@ export default function ChatInput({ onSendText, onUploadFile, isProcessing, lang
   }, []);
 
   const LANGUAGES = [
-    { code: 'en', name: 'English' },
-    { code: 'hi', name: 'Hindi (हिन्दी)' },
-    { code: 'ta', name: 'Tamil (தமிழ்)' },
-    { code: 'te', name: 'Telugu (తెలుగు)' },
+    { code: 'bn', name: 'Bengali (বাংলা)' },
     { code: 'kn', name: 'Kannada (ಕನ್ನಡ)' },
-    { code: 'or', name: 'Odia (ଓଡ଼ିଆ)' },
+    { code: 'en', name: 'English' },
     { code: 'mr', name: 'Marathi (मराठी)' },
-    { code: 'ml', name: 'Malayalam (മലയാളം)' },
-    { code: 'bn', name: 'Bengali (বাংলা)' }
+    { code: 'hi', name: 'Hindi (हिन्दी)' },
+    { code: 'te', name: 'Telugu (తెలుగు)' },
+    { code: 'ta', name: 'Tamil (தமிழ்)' },
+    { code: 'ml', name: 'Malayalam (മലയാളം)' }
   ];
 
   const getLanguageName = (code) => {
@@ -288,113 +287,93 @@ export default function ChatInput({ onSendText, onUploadFile, isProcessing, lang
       </AnimatePresence>
 
       {/* Main Input Textarea Bar */}
-      <div className="glass-input rounded-2xl flex flex-col p-2.5 shadow-2xl" style={{ border: '1px solid var(--border-color)' }}>
+      <div className="flex items-center gap-2 rounded-full border shadow-xl bg-white/70 backdrop-blur-md p-1.5 w-full border-sky-200/50 pl-4">
+        {/* Text Area */}
         <textarea
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type a message to Da Vinci..."
+          placeholder="Type a message to StudyBot..."
           disabled={isProcessing}
-          className="w-full bg-transparent outline-none resize-none px-3 py-2 min-h-[52px] max-h-32 text-sm leading-relaxed"
-          style={{ color: 'var(--text-primary)' }}
+          className="flex-1 bg-transparent outline-none resize-none px-2 py-2 text-sm leading-relaxed text-slate-800 placeholder-slate-400"
+          style={{ height: '36px', minHeight: '36px' }}
           rows={1}
         />
-        
-        <div className="flex items-center justify-between px-2 pt-2 border-t" style={{ borderColor: 'var(--border-color)' }}>
-          <div>
-            <label className="cursor-pointer p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800/40 rounded-lg inline-flex items-center justify-center transition-colors" title="Attach knowledge base document (.pdf, .txt, .docx)">
-              <input type="file" className="hidden" onChange={handleFileChange} accept=".pdf,.txt,.docx" />
-              <Paperclip className="w-5 h-5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200" />
-            </label>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            {/* Custom Language Selector Dropdown Popover */}
-            <div className="relative" ref={langDropdownRef}>
-              <button
-                type="button"
-                onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                disabled={isProcessing}
-                className="p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-center"
-                style={{
-                  borderColor: isLangDropdownOpen ? 'var(--color-accent)' : 'var(--border-color)',
-                  backgroundColor: isLangDropdownOpen ? 'var(--bg-user-bubble)' : 'var(--bg-input)',
-                  color: 'var(--text-primary)'
-                }}
-                title={`Select Language (Current: ${getLanguageName(languageCode)})`}
-              >
-                <Globe className="w-5 h-5" />
-              </button>
-              
-              <AnimatePresence>
-                {isLangDropdownOpen && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: -10, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.18, ease: "easeOut" }}
-                    className="absolute bottom-12 right-0 w-56 rounded-xl border shadow-2xl z-50 flex flex-col gap-0.5 p-1.5"
-                    style={{
-                      backgroundColor: theme === 'dark' ? '#0f0f12' : '#ffffff',
-                      borderColor: 'var(--border-color)',
-                      color: 'var(--text-primary)'
-                    }}
-                  >
-                    {LANGUAGES.map((lang) => (
-                      <button
-                        key={lang.code}
-                        type="button"
-                        onClick={() => {
-                          setLanguageCode(lang.code);
-                          setIsLangDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3 py-2 rounded-lg text-sm transition-all cursor-pointer font-medium border border-transparent"
-                        style={{
-                          backgroundColor: languageCode === lang.code ? 'var(--bg-user-bubble)' : 'transparent',
-                          borderColor: languageCode === lang.code ? 'var(--border-color)' : 'transparent',
-                          color: languageCode === lang.code ? 'var(--text-primary)' : 'var(--text-secondary)'
-                        }}
-                      >
-                        {lang.name}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
 
-            {/* Mic Trigger */}
+        {/* Action Controls (Globe Lang, Voice, Send) */}
+        <div className="flex items-center gap-1 shrink-0 pr-1">
+          {/* Custom Language Selector Dropdown Popover */}
+          <div className="relative" ref={langDropdownRef}>
             <button
               type="button"
-              onClick={startRecording}
+              onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
               disabled={isProcessing}
-              className="p-2.5 rounded-xl border flex items-center justify-center transition-all cursor-pointer"
-              style={{
-                borderColor: 'var(--border-color)',
-                backgroundColor: 'var(--bg-input)',
-                color: 'var(--text-primary)'
-              }}
-              title="Voice Speech Input"
+              className="p-2 hover:bg-sky-100/70 rounded-full transition-all cursor-pointer flex items-center justify-center text-sky-600"
+              title={`Select Language (Current: ${getLanguageName(languageCode)})`}
             >
-              <Mic className="w-5 h-5" />
+              <Globe className="w-5 h-5" />
             </button>
             
-            {/* Send Trigger */}
-            <button
-              onClick={handleSend}
-              disabled={(!inputText.trim()) || isProcessing}
-              className="p-2.5 rounded-xl border flex items-center justify-center transition-all cursor-pointer"
-              style={{
-                borderColor: (inputText.trim() && !isProcessing) ? 'var(--color-accent)' : 'var(--border-color)',
-                backgroundColor: (inputText.trim() && !isProcessing) ? 'var(--bg-user-bubble)' : 'var(--bg-input)',
-                color: 'var(--text-primary)',
-                opacity: (inputText.trim() && !isProcessing) ? 1 : 0.5,
-                cursor: (inputText.trim() && !isProcessing) ? 'pointer' : 'not-allowed'
-              }}
-            >
-              {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-            </button>
+            <AnimatePresence>
+              {isLangDropdownOpen && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: -10, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="absolute bottom-12 right-0 w-56 rounded-xl border shadow-2xl z-50 flex flex-col gap-0.5 p-1.5"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    borderColor: 'rgba(14, 165, 233, 0.2)',
+                    color: '#0f172a'
+                  }}
+                >
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      onClick={() => {
+                        setLanguageCode(lang.code);
+                        setIsLangDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-sm transition-all cursor-pointer font-medium border border-transparent"
+                      style={{
+                        backgroundColor: languageCode === lang.code ? '#bae6fd' : 'transparent',
+                        color: languageCode === lang.code ? '#0369a1' : '#475569'
+                      }}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+
+          {/* Mic Trigger */}
+          <button
+            type="button"
+            onClick={startRecording}
+            disabled={isProcessing}
+            className="p-2 hover:bg-sky-100/70 rounded-full flex items-center justify-center transition-all cursor-pointer text-sky-600"
+            title="Voice Speech Input"
+          >
+            <Mic className="w-5 h-5" />
+          </button>
+          
+          {/* Send Trigger */}
+          <button
+            onClick={handleSend}
+            disabled={(!inputText.trim()) || isProcessing}
+            className="p-2.5 rounded-full flex items-center justify-center transition-all shadow-md"
+            style={{
+              backgroundColor: (inputText.trim() && !isProcessing) ? '#0284c7' : '#e2e8f0',
+              color: (inputText.trim() && !isProcessing) ? '#ffffff' : '#94a3b8',
+              cursor: (inputText.trim() && !isProcessing) ? 'pointer' : 'not-allowed'
+            }}
+          >
+            {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+          </button>
         </div>
       </div>
 
@@ -403,62 +382,55 @@ export default function ChatInput({ onSendText, onUploadFile, isProcessing, lang
         {showVoiceModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
             <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className={`w-full max-w-md rounded-2xl shadow-2xl p-6 relative overflow-hidden backdrop-blur-xl ${
-                fontStyle === 'baskerville' ? 'chat-font-baskerville' :
-                fontStyle === 'times' ? 'chat-font-times' :
-                fontStyle === 'comicsans' ? 'chat-font-comicsans' :
-                ''
-              }`}
+              initial={{ scale: 0.9, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 10 }}
+              className="w-full max-w-md rounded-xl shadow-2xl p-6 relative overflow-hidden backdrop-blur-2xl border-2 border-sky-300/50"
               style={{
-                backgroundColor: 'var(--bg-sidebar)',
-                border: '1px solid var(--border-color)',
-                color: 'var(--text-primary)'
+                backgroundColor: 'rgba(224, 242, 254, 0.95)',
+                color: '#0f172a'
               }}
             >
               {/* Glowing Background Radial */}
-              <div className="absolute top-[-50px] right-[-50px] w-[150px] h-[150px] bg-zinc-500/5 blur-[50px] rounded-full pointer-events-none" />
+              <div className="absolute top-[-30px] right-[-30px] w-[160px] h-[160px] bg-sky-400/20 blur-[45px] rounded-full pointer-events-none" />
 
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+                <h3 className="text-lg font-bold" style={{ color: '#0369a1' }}>
                   Voice Assistant
                 </h3>
                 <button 
                   onClick={handleCancelVoiceModal} 
-                  className="p-1 rounded-lg transition cursor-pointer"
-                  style={{ color: 'var(--text-secondary)' }}
+                  className="p-1 rounded-lg transition hover:bg-sky-200/50 cursor-pointer"
+                  style={{ color: '#0369a1' }}
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Unified Voice Status Visualizer */}
-              <div className="flex flex-col items-center justify-center py-4 text-center border-b mb-4" style={{ borderColor: 'var(--border-color)' }}>
+              <div className="flex flex-col items-center justify-center py-4 text-center border-b mb-4" style={{ borderColor: 'rgba(14, 165, 233, 0.2)' }}>
                 <div className="relative flex items-center justify-center mb-4">
                   {/* Glowing animations depending on states */}
                   {voiceModalState === 'recording' && (
                     <>
-                      <span className="absolute inline-flex h-20 w-20 rounded-full bg-red-500/20 animate-ping"></span>
-                      <span className="absolute inline-flex h-24 w-24 rounded-full bg-red-500/10 animate-pulse"></span>
+                      <span className="absolute inline-flex h-20 w-20 rounded-full bg-sky-400/40 animate-ping"></span>
+                      <span className="absolute inline-flex h-24 w-24 rounded-full bg-sky-400/20 animate-pulse"></span>
                     </>
                   )}
                   {voiceModalState === 'transcribing' && (
                     <>
-                      <span className="absolute inline-flex h-20 w-20 rounded-full bg-zinc-400/20 animate-ping"></span>
-                      <span className="absolute inline-flex h-24 w-24 rounded-full bg-zinc-400/10 animate-pulse"></span>
+                      <span className="absolute inline-flex h-20 w-20 rounded-full bg-blue-400/30 animate-ping"></span>
+                      <span className="absolute inline-flex h-24 w-24 rounded-full bg-blue-400/20 animate-pulse"></span>
                     </>
                   )}
                   {voiceModalState === 'review' && (
-                    <span className="absolute inline-flex h-20 w-20 rounded-full bg-zinc-400/10 animate-pulse"></span>
+                    <span className="absolute inline-flex h-20 w-20 rounded-full bg-sky-400/10 animate-pulse"></span>
                   )}
                   
-                  <div className={`relative w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all ${
-                    voiceModalState === 'recording' ? 'bg-gradient-to-br from-red-500 to-red-600 shadow-red-500/20 text-white' :
-                    voiceModalState === 'transcribing' ? 'bg-gradient-to-br from-zinc-700 to-zinc-800 text-white shadow-zinc-500/20' :
-                    voiceModalState === 'review' ? 'bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700/50 text-white' :
-                    'bg-gradient-to-br from-red-500 to-red-600 shadow-red-500/20 text-white'
+                  <div className={`relative w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all text-white ${
+                    voiceModalState === 'recording' ? 'bg-gradient-to-br from-sky-400 to-blue-600 shadow-sky-400/30' :
+                    voiceModalState === 'transcribing' ? 'bg-gradient-to-br from-blue-600 to-indigo-600 shadow-blue-500/30 animate-pulse' :
+                    'bg-gradient-to-br from-sky-500 to-blue-500 shadow-sky-500/20'
                   }`}>
                     {voiceModalState === 'transcribing' ? (
                       <Loader2 className="w-7 h-7 animate-spin" />
@@ -545,7 +517,7 @@ export default function ChatInput({ onSendText, onUploadFile, isProcessing, lang
                   {voiceModalState === 'recording' && (
                     <button 
                       onClick={stopRecording}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl font-semibold text-xs shadow-lg shadow-red-600/20 transition cursor-pointer w-full"
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-white rounded-full font-semibold text-xs shadow-lg transition cursor-pointer w-full"
                     >
                       <Square className="w-3.5 h-3.5 fill-current" />
                       Stop & Translate
@@ -555,11 +527,7 @@ export default function ChatInput({ onSendText, onUploadFile, isProcessing, lang
                   {voiceModalState === 'transcribing' && (
                     <button 
                       disabled
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs transition cursor-not-allowed w-full"
-                      style={{
-                        backgroundColor: 'var(--bg-user-bubble)',
-                        color: 'var(--text-secondary)'
-                      }}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-100 text-sky-600 rounded-full font-semibold text-xs transition cursor-not-allowed w-full"
                     >
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
                       Translating Voice...
@@ -570,12 +538,7 @@ export default function ChatInput({ onSendText, onUploadFile, isProcessing, lang
                     <>
                       <button
                         onClick={startRecording}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition font-semibold text-xs cursor-pointer flex-1"
-                        style={{
-                          borderColor: 'var(--border-color)',
-                          backgroundColor: 'var(--bg-input)',
-                          color: 'var(--text-primary)'
-                        }}
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-sky-300 bg-white text-sky-600 hover:bg-sky-50 transition font-semibold text-xs cursor-pointer flex-1"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
                         Record Again
@@ -584,12 +547,7 @@ export default function ChatInput({ onSendText, onUploadFile, isProcessing, lang
                       <button
                         onClick={handleConfirmSend}
                         disabled={!transcribedText.trim()}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition font-semibold text-xs cursor-pointer flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                        style={{
-                          borderColor: 'var(--border-color)',
-                          backgroundColor: 'var(--bg-user-bubble)',
-                          color: 'var(--text-user-bubble)'
-                        }}
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-white bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 transition font-semibold text-xs cursor-pointer flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Check className="w-3.5 h-3.5" />
                         Confirm & Send

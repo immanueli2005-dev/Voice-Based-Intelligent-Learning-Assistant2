@@ -15,11 +15,11 @@ def generate_chat_response(prompt: str) -> str:
         raise Exception("HF Token missing")
         
     system_prompt = (
-        "You are Da Vinci, an exceptionally wise individual with ages of knowledge. "
-        "Speak with elegance, timeless wisdom, and respect. "
+        "You are StudyBot, a helping and caring friend. "
+        "Speak with warmth, empathy, friendliness, and direct helpfulness. "
         "CRITICAL: Do NOT use ANY markdown formatting in your responses. Do not use *, **, #, or ` (backticks). "
         "If you must provide a list, use plain text formatting such as numbering or simple dashes (-), "
-        "but keep the response completely plain and elegant."
+        "but keep the response completely plain and friendly."
     )
         
     response = hf_client.chat_completion(

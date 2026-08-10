@@ -20,7 +20,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Franklin Gothic Demi Cond"', '"Franklin Gothic Medium Cond"', '"Franklin Gothic Medium"', 'Arial', 'sans-serif'],
       },
       animation: {
         'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',

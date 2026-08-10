@@ -2,15 +2,14 @@ import React from 'react';
 import { Globe } from 'lucide-react';
 
 const LANGUAGES = [
-  { code: 'en', name: 'English' },
-  { code: 'hi', name: 'Hindi (हिन्दी)' },
-  { code: 'ta', name: 'Tamil (தமிழ்)' },
-  { code: 'te', name: 'Telugu (తెలుగు)' },
-  { code: 'kn', name: 'Kannada (ಕನ್ನಡ)' },
-  { code: 'ml', name: 'Malayalam (മലയാളம்)' },
   { code: 'bn', name: 'Bengali (বাংলা)' },
+  { code: 'kn', name: 'Kannada (ಕನ್ನಡ)' },
+  { code: 'en', name: 'English' },
   { code: 'mr', name: 'Marathi (मराठी)' },
-  { code: 'or', name: 'Odia (ଓଡ଼ିଆ)' }
+  { code: 'hi', name: 'Hindi (हिन्दी)' },
+  { code: 'te', name: 'Telugu (తెలుగు)' },
+  { code: 'ta', name: 'Tamil (தமிழ்)' },
+  { code: 'ml', name: 'Malayalam (മലയാളം)' }
 ];
 
 export default function LanguageSelector({ selectedLanguage, onChange }) {

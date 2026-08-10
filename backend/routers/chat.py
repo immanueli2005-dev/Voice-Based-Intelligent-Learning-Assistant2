@@ -53,7 +53,7 @@ def chat_text(request: ChatTextRequest):
         try:
             if getattr(request, 'voiceEnabled', True):
                 audio_filename = tts_service.generate_tts(response_text, request.languageCode)
-                audio_url = f"http://localhost:5000/static/audio/{audio_filename}"
+                audio_url = f"http://localhost:5003/static/audio/{audio_filename}"
             else:
                 audio_url = None
         except Exception as tts_e:

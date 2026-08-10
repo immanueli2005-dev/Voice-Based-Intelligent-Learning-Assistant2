@@ -123,16 +123,20 @@ export default function Sidebar({
 
   return (
     <div 
-      className="w-full h-screen glass-panel flex flex-col shrink-0 border-r z-20 transition-all duration-300"
-      style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+      className="w-full h-screen flex flex-col shrink-0 z-20 transition-all duration-300 border-r-4 border-double"
+      style={{ 
+        backgroundColor: '#e0f2fe',
+        borderColor: '#7dd3fc',
+        color: '#0f172a'
+      }}
     >
       {/* Sidebar Top: Space / Project Selector */}
       <div className="px-4 pt-4 flex flex-col gap-1">
         <div className="flex items-center justify-between px-1 mb-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Workspace</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-800">Workspace</span>
           <button 
             onClick={onCreateProject} 
-            className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800/40 transition text-zinc-500 hover:text-zinc-950 dark:hover:text-white cursor-pointer"
+            className="p-1 rounded hover:bg-sky-200/50 transition text-sky-700 hover:text-sky-950 cursor-pointer"
             title="Create Custom Project Space"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -194,7 +198,7 @@ export default function Sidebar({
                     setEditingProjectId(proj.id);
                     setEditProjectName(proj.name);
                   }}
-                  className="p-0.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800/40 transition text-zinc-500 hover:text-zinc-950 dark:hover:text-white"
+                  className="p-0.5 rounded hover:bg-sky-200/50 transition text-sky-700 hover:text-sky-950"
                   title="Rename Project"
                 >
                   <Edit2 className="w-3 h-3" />
@@ -204,7 +208,7 @@ export default function Sidebar({
                     e.stopPropagation();
                     if (onDeleteProject) onDeleteProject(proj.id);
                   }}
-                  className="p-0.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800/40 transition text-zinc-500 hover:text-red-500"
+                  className="p-0.5 rounded hover:bg-sky-200/50 transition text-sky-700 hover:text-red-500"
                   title="Delete Project"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -215,7 +219,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <hr className="my-2" style={{ borderColor: 'var(--border-color)' }} />
+      <hr className="my-2" style={{ borderColor: '#7dd3fc' }} />
 
       {/* Sidebar Middle: "+ New Chat" in active Workspace */}
       <div className="px-4 py-1">
@@ -235,7 +239,7 @@ export default function Sidebar({
 
       {/* Sidebar Chats: List chats of the active Workspace */}
       <div className="flex-1 overflow-y-auto px-3 py-2 flex flex-col gap-1">
-        <div className="text-[10px] font-bold mb-1 px-2 uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+        <div className="text-[10px] font-bold mb-1 px-2 uppercase tracking-wider text-sky-800">
           Chats in {activeWorkspaceName}
         </div>
         
@@ -250,7 +254,7 @@ export default function Sidebar({
               onClick={() => {
                 if (editingId !== session.id) onSelectSession(session.id);
               }}
-              className="group w-full flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer text-xs transition-all duration-200 hover:bg-zinc-100 dark:hover:bg-zinc-800/40"
+              className="group w-full flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer text-xs transition-all duration-200 hover:bg-sky-200/50"
               style={{
                 backgroundColor: currentSessionId === session.id ? 'var(--bg-user-bubble)' : 'transparent',
                 color: currentSessionId === session.id ? 'var(--text-primary)' : 'var(--text-secondary)'
@@ -287,14 +291,14 @@ export default function Sidebar({
                     setEditingId(session.id);
                     setEditTitle(session.title);
                   }}
-                  className="p-0.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800/40 transition-colors text-zinc-500 hover:text-zinc-950 dark:hover:text-white"
+                  className="p-0.5 rounded hover:bg-sky-200/50 transition-colors text-sky-700 hover:text-sky-950"
                   title="Rename Chat"
                 >
                   <Edit2 className="w-3 h-3" />
                 </button>
                 <button
                   onClick={(e) => handleDelete(e, session.id)}
-                  className="p-0.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800/40 transition-colors text-zinc-500 hover:text-red-500"
+                  className="p-0.5 rounded hover:bg-sky-200/50 transition-colors text-sky-700 hover:text-red-500"
                   title="Delete Chat"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -308,15 +312,14 @@ export default function Sidebar({
       {/* Clear conversations button */}
       <div 
         className="p-4 border-t flex flex-col gap-2 transition-all duration-300"
-        style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-input)' }}
+        style={{ borderColor: '#7dd3fc', backgroundColor: '#bae6fd' }}
       >
          <button 
            onClick={handleClearAll}
-           className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl border transition-all duration-300 text-[10px] font-bold uppercase tracking-wider cursor-pointer hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-400"
+           className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl border transition-all duration-300 text-[10px] font-bold uppercase tracking-wider cursor-pointer border-red-300 hover:border-red-400 hover:bg-red-500/10 hover:text-red-600"
            style={{
-             borderColor: 'var(--border-color)',
-             backgroundColor: 'var(--bg-sidebar)',
-             color: 'var(--text-secondary)'
+             backgroundColor: '#ffffff',
+             color: '#64748b'
            }}
            title="Delete all conversations"
          >

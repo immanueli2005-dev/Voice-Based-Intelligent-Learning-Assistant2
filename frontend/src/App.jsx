@@ -1,24 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { Menu, PanelLeftClose, PanelLeftOpen, Globe, Sun, Moon } from 'lucide-react';
+import { Menu, PanelLeftClose, PanelLeftOpen, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from './components/Sidebar';
 import ChatWindow from './components/ChatWindow';
 import InteractiveGrid from './components/InteractiveGrid';
 
-const WELCOME_GREETINGS = [
-  "Greetings. I am Da Vinci.",
-  "Curiosity is the key to wisdom. How may I assist you?",
-  "Every obstacle yields to effort. Ask me anything.",
-  "Learning never exhausts the mind. What shall we explore?",
-  "Simplicity is the ultimate sophistication. Speak, I am listening.",
-  "To understand is to be free. Let us delve into knowledge.",
-  "Greetings seeker. What mysteries shall we unravel today?",
-  "Science is the captain, practice the soldiers. What is your query?",
-  "Behold, a portal of endless inquiry. Speak your truth.",
-  "Patience is the companion of wisdom. How may I help you?"
-];
+const RobotLogo = ({ className }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="20" y="30" width="60" height="50" rx="10" fill="currentColor" fillOpacity="0.05" />
+    <circle cx="50" cy="18" r="4" fill="currentColor" />
+    <line x1="50" y1="22" x2="50" y2="30" />
+    <line x1="12" y1="55" x2="20" y2="55" />
+    <line x1="80" y1="55" x2="88" y2="55" />
+    <circle cx="40" cy="50" r="5" fill="currentColor" />
+    <path d="M 57,50 Q 62,45 67,50" />
+    <path d="M 40,66 Q 50,73 60,66" />
+  </svg>
+);
 
 export default function App() {
   const [currentSessionId, setCurrentSessionId] = useState('');
@@ -52,16 +52,12 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile sidebar toggle
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(true); // Desktop sidebar toggle (minimized initially)
   const [languageCode, setLanguageCode] = useState('en');
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-  const [fontStyle, setFontStyle] = useState('baskerville');
+  const theme = 'light';
 
   const [projects, setProjects] = useState([]);
   const [currentProjectId, setCurrentProjectId] = useState('default');
   const [showCreateProjectModal, setShowCreateProjectModal] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
-  const [welcomeMessage, setWelcomeMessage] = useState(
-    () => WELCOME_GREETINGS[Math.floor(Math.random() * WELCOME_GREETINGS.length)]
-  );
 
   const [sidebarWidth, setSidebarWidth] = useState(280);
 
@@ -163,19 +159,7 @@ export default function App() {
     }
   };
 
-  const getFontClass = () => {
-    if (fontStyle === 'baskerville') return 'chat-font-baskerville';
-    if (fontStyle === 'times') return 'chat-font-times';
-    if (fontStyle === 'comicsans') return 'chat-font-comicsans';
-    return '';
-  };
 
-  const getActiveFontClass = (style) => {
-    if (fontStyle === style) {
-      return 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 shadow';
-    }
-    return 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200';
-  };
 
   // Initialize session and projects
   useEffect(() => {
@@ -367,10 +351,7 @@ export default function App() {
     }
   };
 
-  // fontStyle state is declared at the top of the component
-
   const handleNewChat = async (targetProjectId) => {
-    setWelcomeMessage(WELCOME_GREETINGS[Math.floor(Math.random() * WELCOME_GREETINGS.length)]);
     const newId = uuidv4();
     const pid = targetProjectId || currentProjectId;
     try {
@@ -488,82 +469,48 @@ export default function App() {
               {isSidebarMinimized ? <PanelLeftOpen className="w-5 h-5 animate-pulse" /> : <PanelLeftClose className="w-5 h-5" />}
             </button>
             
-            {/* Da Vinci Header - Clicks to start new chat in General */}
+            {/* Header - Clicks to start new chat in General */}
             <button 
               onClick={handleLogoClick}
               className="flex items-center gap-3 px-2 hidden md:flex hover:scale-105 transition-transform cursor-pointer"
               title="Start a New Chat"
             >
-              <img src="/logo.png" alt="Da Vinci Logo" className="w-10 h-10 object-contain opacity-95 shrink-0" />
+              <RobotLogo className="w-8 h-8 text-[var(--color-accent)] shrink-0" />
               <span 
-                className={`text-2xl font-bold transition-all duration-300 ${getFontClass()}`}
+                className="text-2xl font-bold transition-all duration-300"
                 style={{ color: 'var(--text-primary)' }}
               >
-                Da Vinci
+                StudyBot
               </span>
             </button>
           </div>
 
           <div className="flex items-center gap-3 px-2">
-            {/* Theme Toggle Button */}
-            <button 
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-lg border transition cursor-pointer flex items-center justify-center"
-              style={{
-                borderColor: 'var(--border-color)',
-                backgroundColor: 'var(--bg-input)',
-                color: 'var(--text-primary)'
-              }}
-              title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-
-            {/* Font Style Toggler Group */}
-            <div className="flex items-center gap-1 p-1 rounded-lg border" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-input)' }}>
-              <button 
-                onClick={() => setFontStyle('baskerville')} 
-                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${getActiveFontClass('baskerville')}`}
-                title="Libre Baskerville Font"
-              >
-                Baskerville
-              </button>
-              <button 
-                onClick={() => setFontStyle('times')} 
-                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${getActiveFontClass('times')}`}
-                title="Times New Roman Font"
-              >
-                Times
-              </button>
-              <button 
-                onClick={() => setFontStyle('comicsans')} 
-                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${getActiveFontClass('comicsans')}`}
-                title="Comic Sans Font"
-              >
-                Comic Sans
-              </button>
-            </div>
-
             {/* Language Selector is now moved to ChatInput near the mic */}
           </div>
         </div>
 
-        {/* Chat Window */}
-        <ChatWindow
-          messages={messages}
-          onSendText={handleSendText}
-          isProcessing={isProcessing}
-          sessionId={currentSessionId}
-          fontStyle={fontStyle}
-          languageCode={languageCode}
-          setLanguageCode={setLanguageCode}
-          theme={theme}
-          welcomeMessage={welcomeMessage}
-          allMessages={allMessages}
-          activeMessageId={activeMessageId}
-          onSelectActiveMessageId={setActiveMessageId}
-          onEditPrompt={handleEditPrompt}
-        />
+        {/* Chat Window Container */}
+        <div className="flex-1 w-full max-w-4xl mx-auto px-4 pb-4 md:py-6 flex flex-col min-h-0 relative z-10">
+          <div 
+            className="flex-1 flex flex-col overflow-hidden rounded-2xl border shadow-xl bg-white/60 backdrop-blur-md"
+            style={{ borderColor: 'var(--border-color)' }}
+          >
+            <ChatWindow
+              messages={messages}
+              onSendText={handleSendText}
+              isProcessing={isProcessing}
+              sessionId={currentSessionId}
+              languageCode={languageCode}
+              setLanguageCode={setLanguageCode}
+              theme={theme}
+              allMessages={allMessages}
+              activeMessageId={activeMessageId}
+              onSelectActiveMessageId={setActiveMessageId}
+              onEditPrompt={handleEditPrompt}
+            />
+          </div>
+        </div>
       </main>
 
       {/* Create Project Modal - Centered */}

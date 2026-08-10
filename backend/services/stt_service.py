@@ -1,3 +1,4 @@
+import os
 from faster_whisper import WhisperModel
 
 try:
@@ -6,9 +7,15 @@ try:
 except ImportError:
     device = "cpu"
 
-print(f"Loading Whisper model on {device}...")
-compute_type = "float16" if device == "cuda" else "int8"
-whisper_model = WhisperModel("small", device=device, compute_type=compute_type)
+# Use local model path to avoid broken symlink issues on Windows
+LOCAL_MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "whisper-small")
+LOCAL_MODEL_PATH = os.path.normpath(LOCAL_MODEL_PATH)
+
+compute_type = "float16" if device == "cuda" else "float32"
+
+print(f"Loading Whisper model from {LOCAL_MODEL_PATH} on {device} ({compute_type})...")
+whisper_model = WhisperModel(LOCAL_MODEL_PATH, device=device, compute_type=compute_type)
+print("Whisper model loaded.")
 
 def transcribe_audio(tmp_path: str):
     segments, info = whisper_model.transcribe(tmp_path, beam_size=5)

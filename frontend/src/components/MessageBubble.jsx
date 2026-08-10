@@ -5,18 +5,25 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { motion } from 'framer-motion';
-import { Bot, User, Volume2, Pause } from 'lucide-react';
+import { User, Volume2, Pause } from 'lucide-react';
 
-export default function MessageBubble({ message, fontStyle }) {
+const RobotLogo = ({ className }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="20" y="30" width="60" height="50" rx="10" fill="currentColor" fillOpacity="0.05" />
+    <circle cx="50" cy="18" r="4" fill="currentColor" />
+    <line x1="50" y1="22" x2="50" y2="30" />
+    <line x1="12" y1="55" x2="20" y2="55" />
+    <line x1="80" y1="55" x2="88" y2="55" />
+    <circle cx="40" cy="50" r="5" fill="currentColor" />
+    <path d="M 57,50 Q 62,45 67,50" />
+    <path d="M 40,66 Q 50,73 60,66" />
+  </svg>
+);
+
+export default function MessageBubble({ message }) {
   const isUser = message.role === 'user';
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
-  const fontClass = fontStyle === 'baskerville' 
-    ? 'chat-font-baskerville' 
-    : fontStyle === 'times' 
-      ? 'chat-font-times' 
-      : 'chat-font-comicsans';
 
   const handleTogglePlay = () => {
     if (!audioRef.current) return;
@@ -44,10 +51,10 @@ export default function MessageBubble({ message, fontStyle }) {
     >
       {!isUser && (
         <div 
-          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border shadow-md p-0.5 transition-all duration-300"
+          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border shadow-md transition-all duration-300"
           style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-color)' }}
         >
-          <img src="/logo.png" alt="Da Vinci" className="w-full h-full object-contain opacity-95" />
+          <RobotLogo className="w-5 h-5 text-[var(--color-accent)]" />
         </div>
       )}
       
@@ -56,22 +63,15 @@ export default function MessageBubble({ message, fontStyle }) {
           className="font-semibold text-xs mb-1 px-1 transition-colors duration-300"
           style={{ color: 'var(--text-secondary)' }}
         >
-          {isUser ? 'You' : 'Da Vinci'}
+          {isUser ? 'You' : 'StudyBot'}
         </div>
         
         <div 
-          className={`text-sm ${fontClass} ${
+          className={`text-sm px-5 py-3.5 shadow-md inline-block border transition-all duration-300 ${
             isUser 
-              ? 'px-5 py-3.5 rounded-2xl rounded-tr-none shadow-md inline-block border transition-all duration-300' 
-              : 'mt-1.5'
+              ? 'rounded-3xl rounded-tr-none text-white bg-gradient-to-br from-sky-400 to-blue-600 border-sky-300/30' 
+              : 'rounded-3xl rounded-tl-none bg-sky-50/50 backdrop-blur-sm border-sky-200/40 text-slate-800'
           }`}
-          style={isUser ? {
-            backgroundColor: 'var(--bg-user-bubble)',
-            borderColor: 'var(--border-user-bubble)',
-            color: 'var(--text-user-bubble)'
-          } : {
-            color: 'var(--text-primary)'
-          }}
         >
           <div className="prose prose-invert max-w-none markdown-body">
             <ReactMarkdown
